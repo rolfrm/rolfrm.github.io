@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Persistent Programming</title>
+<!-- 2016-05-29 Sun 09:10 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="rolf" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">persistent_programming</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Persistent Programming</a>
+<ul>
+<li><a href="#sec-1-1">1.1. What works well</a></li>
+<li><a href="#sec-1-2">1.2. What does not work well</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. GUI programming with persisted programming</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Persistent Programming</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Saving, loading and recreating state are big problems when developing and using programs. Undo and redo are just sub-problems of this. Generally, its a big hassle to implement these features and they usually are not successfull the first time and they are not often tested in a development setting. They are also prone to break when changes are made. Additionally, debugging usually takes time because it takes time to get the program into a state that contains a given bug in the first place. And when a bug is found, it can be hard to reproduce. 
+</p>
+
+<p>
+The solution to these problems are often implemented in a slow way, using XML files for storage of data that the computer already understood. XML is useful for some things, but in my oppinion, you can always find a better format. The best thing about XML is that it is relatively standardized. But I digress. The point is, it is not necessesarily a bad idea to store data in uncompressed binary format, it can make it very efficient and easy to load/save/share/(etc) data between programs running on the same machine.
+</p>
+
+<p>
+If all programs started instantly and exactly where you left off. Not only would it help the user, it would also make it very easy to debug as when a bug is found, the whole program state does not need to be reproduced to find it again, on quitting the whole state is already stored. So when the program starts again, the bug should also be there. Additionally, it makes it very easy to save the state of the program as the folder containing it can just be copied. 
+</p>
+
+<p>
+I have found a relatively simple way of storing program state in a way that makes it quite simple and fast to have all this. It relies heavily on using memory mapped files for storing most of all allocated data within the program. Each heap pointer gets a unique file, for storing the information inside a folder called "data". The data folder contains the whole reloadable program state. The rest needs to be built when the program starts. 
+</p>
+
+<p>
+There are of course a limit to this. Each heap pointer needs to be named uniquely by the programmer. This means that if several objects of the same type is wanted, it is necessary to use a kind of table system. I think that it might actually forces you to program in a nicer style, but normal allocate and throw away methods cannot be used. There are ways around this by programming in a more data oriented style. This post describes how to implement this pattern into a program. For the sake of documentation, I have created a small example game that used this technique. The game might be a bit too small for actually showing how this works in a bigger setting, but it demoes the basic idea. The game can be found here: <a href="https://github.com/rolfrm/persistent_programming_demo">https://github.com/rolfrm/persistent_programming_demo</a>
+</p>
+
+
+<p>
+I defined the API like this:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-c"><span style="color: #5F7F5F;">// </span><span style="color: #ff4500;">Creates a new or opens a persisted file by name "name". If it does not exist it creates a blank file of size min_size.</span>
+<span style="color: #98fb98;">void</span> * <span style="color: #87cefa;">persist_alloc</span>(<span style="color: #00ffff; font-weight: bold;">const</span> <span style="color: #98fb98;">char</span> * <span style="color: #eedd82;">name</span>, <span style="color: #98fb98;">size_t</span> <span style="color: #eedd82;">min_size</span>);
+
+<span style="color: #5F7F5F;">// </span><span style="color: #ff4500;">Gets the size of a persistent file.</span>
+<span style="color: #98fb98;">u64</span> <span style="color: #87cefa;">persist_size</span>(<span style="color: #98fb98;">void</span> * <span style="color: #eedd82;">ptr</span>);
+
+<span style="color: #5F7F5F;">// </span><span style="color: #ff4500;">Reallocates a already persisted file.</span>
+<span style="color: #98fb98;">void</span> * <span style="color: #87cefa;">persist_realloc</span>(<span style="color: #98fb98;">void</span> * <span style="color: #eedd82;">ptr</span>, <span style="color: #98fb98;">u64</span> <span style="color: #eedd82;">size</span>);
+</pre>
+</div>
+
+<p>
+More might be needed like a persist<sub>free</sub>(), but I have not found a use for it yet. In this game, the game state is defined by the positions, colors, size of a bunch of circles, more information is included that defines the state of the different circles. So the circles are persisted in a file called "game". Each circle is about 30bytes so for 1000 circles, the file is about 30kb. Each circle has a 'type' field which defines the behaviour of the circles.
+</p>
+</div>
+
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> What works well</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>The technique is easy to use and implement
+</li>
+<li>It was easy to build a simple editor (but hard to use) for the game. 
+</li>
+<li>I found debugging to be strikingly easy when all the game state is savable. I even found that after segfaulting it was easy to find and fix bugs. 
+</li>
+<li>It has not once happened that the data files became badly corrupted due to an exit or crash.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> What does not work well</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>pointers needs to be changed to an index that points into a known persisted file
+</li>
+<li>everything becomes a bit more static, it feels a bit like using global variables.
+</li>
+<li>Traditional OOP style cannot be persisten, a tabel oriented programming technique has to be used.
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> GUI programming with persisted programming</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Being a bit afraid my demo is still too small to demonstrate a real project using the system, I have decided to try to build a GUI using it. The GUI needs to be built in a data oriented style and it must be possible to build an extensible GUI on top of it using the following basic primitives:
+</p>
+
+<ul class="org-ul">
+<li>Windows
+</li>
+<li>Axis-Aligned Rectangles
+</li>
+<li>Text (line no wrap)
+</li>
+<li>Circles
+</li>
+<li>OpenGL screen buffer
+</li>
+<li>Transform
+</li>
+</ul>
+
+<p>
+The GUI is used to edit the circle game. 
+</p>
+
+<p>
+A window has a number of child elements. These can be either of the other mentioned items or others.
+</p>
+
+<p>
+Example GUI
+</p>
+<pre class="example">
+ __________________________________
+| __________   Error!   ______-_+_X|
+|                                  |
+|                                  |
+| Error: Something has happened!   |
+|                                  |
+|                                  |
+|                                  |
+|                                  |
+|                                  |
+|              (  OK  ) ( Cancel ) |
+|__________________________________|
+</pre>
+<p>
+The OK and Cancel buttons should follow the lower edge of the window with a margin to eachother and the window. The controls flows down. The error message is a text block, but the text line does not include wrapping.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-c"><span style="color: #98fb98;">window</span> * <span style="color: #eedd82;">win</span> = get_window(<span style="color: #ffa07a;">"error_window"</span>, 0x112370234);
+<span style="color: #98fb98;">textline</span> * <span style="color: #eedd82;">text</span> = get_text_line(win-&gt;id, <span style="color: #ffa07a;">"error_text"</span>);
+<span style="color: #98fb98;">button</span> * <span style="color: #eedd82;">ok_btn</span> = get_button(win-&gt;id, <span style="color: #ffa07a;">"ok_btn"</span>);
+<span style="color: #98fb98;">button</span> * <span style="color: #eedd82;">cancel_btn</span> = get_button(win-&gt;id, <span style="color: #ffa07a;">"cancel_btn"</span>);
+<span style="color: #98fb98;">stackpanel</span> * <span style="color: #eedd82;">stackpanel</span> = get_stack_panel(win-&gt;id, <span style="color: #ffa07a;">"buttons_panel"</span>);
+set_margin(ok_btn-&gt;id, 2, 2, 2, 2);
+set_margin(cancel_btn-&gt;id, 2, 2, 2, 2);
+set_margin(text-&gt;id, 2, 10, 0, 0);
+add_control(stackpanel-&gt;id, ok_btn-&gt;id);
+add_control(stackpanel-&gt;id, cancel_btn-&gt;id);
+add_control(win-&gt;id, ok_btn-&gt;id);
+add_control(win-&gt;id, cancel_btn-&gt;id);
+add_control(win-&gt;id, text-&gt;id);
+render_window(win);
+</pre>
+</div>
+
+
+<p>
+After working a bit on this, I have reached the conclusion that it is indeed possible to build systems using persistent / data oriented programming. It even has some interesting benefits. For example, the data used for building the GUI is the same data that is used for showing the GUI. 
+</p>
+
+<p>
+More DOD related that persistent programming related is it, that an attached property pattern emerged as I worked on the GUI system. Attached properties are a concept from the C# / WPF GUI library. It is all about being able to attach certain properties to an object at runtime rather than compile-time. In normal OOP design, you would add a field or property when designing the class, but somethings you would only add in runtime. For example, you dont want placeholder members in any control class just in case the control was added to a Grid or something like that. This concept can be taken to the extreme so that any, non-essential property is added at runtime.
+</p>
+
+<p>
+Example: A rectangle has 'size' and 'color' as essential properties. However, it is wanted to add a margin around the rectangle when it is rendered in the GUI. Hence, the margin is added to the rectangle at runtime. In C this looks like this:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-c"><span style="color: #98fb98;">rectangle</span> * <span style="color: #eedd82;">rect</span> = get_rectangle(<span style="color: #ffa07a;">"myRectangle"</span>);
+rect-&gt;color = color_new(1.0, 0, 0); <span style="color: #5F7F5F;">// </span><span style="color: #ff4500;">red</span>
+rect-&gt;size = size_new(30, 30); <span style="color: #5F7F5F;">// </span><span style="color: #ff4500;">30x30 pixels</span>
+add_margin(rect-&gt;id, thickness_new(1, 1, 1, 1) <span style="color: #5F7F5F;">// </span><span style="color: #ff4500;">1px margin all around</span>
+
+<span style="color: #5F7F5F;">// </span><span style="color: #ff4500;">Getting the margin</span>
+<span style="color: #98fb98;">thickness</span> <span style="color: #eedd82;">margin</span> = get_margin(rect-&gt;id);
+</pre>
+</div>
+
+<p>
+<code>get_margin</code> would find the margin of the rectangle, by looking up its ID, but if it was not found, a default value would just be returned.
+</p>
+
+<p>
+A good thing about this pattern is also that memory is not used on margin when the value is not set to something other than the default.
+</p>
+
+<p>
+Obviously, there are some problems to be solved here. For example, it needs to be quite efficient to implement and lookup these attached property structures. I see this as an indexing problem.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: rolf</p>
+<p class="date">Created: 2016-05-29 Sun 09:10</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
