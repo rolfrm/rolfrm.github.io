@@ -1,6 +1,32 @@
-<a href="persistent_gui.html">11. June 2016. Persistent GUI Programming</a>
-<p/>
-<a href="persistent_oop.html">5. June 2016. Persistent Object Oriented Programming</a>
-<p/>
-<a href="persistent_programming.html">29. May 2016. Persistent Programming</a>
+<html>  
+    <head>
+        <meta charset="utf-8"/>
+        <script src="dist/bundle.js"></script>
+        <script>
+        </script>
+    </head>
+    <body>
+        <h2>WebGL Demo</h2>
+        <textarea id="editor"></textarea>
+        <button onclick="executeLisp()">Execute</button>
+        <div id="output"></div>
+      
+        <script>
+          function executeLisp() {
+            const editorContent = document.getElementById('editor').value;
+            try {
+              // You can replace this with an actual Lisp interpreter or evaluator
+              //const result = evallisp(editorContent);
+              lisp.LispEvalBlock(editorContent);
+					 document.getElementById('output').innerText = "";
+            } catch (error) {
+              document.getElementById('output').innerText = `Error: ${error.message}`;
+            }
+            
+          }
+          lisp.LispEvalBlock("(loadfile \"lisp/lisp.lisp\")")
+        </script>
 
+        <canvas id="webgl-canvas" bg-color="red"></canvas> 
+    </body>
+</html>  
