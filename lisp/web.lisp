@@ -1,4 +1,4 @@
-(load "lisp.lisp")
+
 (defvar svgns "http://www.w3.org/2000/svg")
 (defvar model '(svg (rect :width 200 :height 200 :fill blue)))
 (println model)

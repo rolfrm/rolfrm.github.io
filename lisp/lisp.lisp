@@ -44,6 +44,8 @@
 
 (defun caar (x) (car (car x)))
 (defun cadr (x) (nth x 1))
+(defun caddr (x) (nth x 2))
+(defun cadddr (x) (nth x 3))
 (defun cadar (x) (cadr (car x)))
 (defun cddr (x) (slice x 2))
 (defun cdddr (x) (slice x 3))
@@ -148,20 +150,20 @@
 (defmacro decf (sym decr)
   `(set ,sym (- ,sym ,(or decr 1))))
 
-(defun assert(condition error &rest datum)
-  (if condition
+(defmacro assert(condition)
+  `(if ,condition
 		(progn)
-		(progn
-		  (raise (or (if datum.length (list error datum) error) "assertion failed")))
-		))
+		(raise (value->string '("assertion failed" ,condition))))
+		)
 
 (defun assert-not(condition error)
   (assert (not condition) error))
 
 (defmacro assert-eq (a b)
-  `(assert (eq ,a ,b)
-			  '("assertion failed: "
-				 ,a != ,b )))
+  `(assert (eq ,a ,b)))
+
+(defmacro assert-eq-float (a b)
+  `(assert (< (abs (- ,a ,b)) 0.000001)))
 
 (defmacro assert-not-eq(a b)
   `(assert (not (eq ,a ,b))
@@ -341,6 +343,15 @@
 		,@body)
 	  ))
 
+(defmacro dotimes (sym-count &rest body)
+  (let ((sym (car sym-count))
+		  (count (cadr sym-count)))
+  `(let ((,sym 0))
+	  (loop (< ,sym ,count)
+		,@body
+		(incr ,sym))
+	  )))
+
 (defmacro cond (&rest cases)
   (let ((out-cases (list)))
      (for-each item cases
@@ -483,3 +494,21 @@
       (loadfile newpath))
   )
 )
+
+;; math
+(defvar math:pi Math.PI)
+(defvar math:2pi (* Math.PI 2))
+(defvar math:pi/2 (/ Math.PI 2))
+(defun math:sin (x) (Math.sin x))
+(defun math:cos (x) (Math.cos x))
+(defun math:tan (x) (Math.tan x))
+(defun math:asin (x) (Math.asin x))
+(defun math:acos (x) (Math.acos x))
+(defun math:atan (x) (Math.atan x))
+(defun math:atan2 (y x) (Math.atan2 y x))
+(defun math:sqrt (x) (Math.sqrt x))
+
+(defun float32-array (&rest items)
+  (Float32Array.from items)
+)
+
