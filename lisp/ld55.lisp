@@ -272,7 +272,7 @@
         (shader:use shader)
 		  )
 	 ($ let ((this-time (getTime)) (move-vec (vec3:new 0 0 0)) (move-angle player-angle) (xrot 0.0)
-		 (delta (max 1 (/ (- this-time last-time) 16.0)))))
+		 (delta 1.0)))
 	 (set time-component  (+ time-component (* delta 0.01)))
     
 	 (set last-time this-time)

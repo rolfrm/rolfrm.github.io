@@ -56,7 +56,7 @@
   (f.apply nil lst)
 )
 
-(defun length(list) (get list 'length))
+(defun length(list) list.length)
 (defvar *types* (makehashmap))
 (defun hashmap-set(map key value)
 	(map.set key value)
@@ -519,7 +519,14 @@
 (defun math:sqrt (x) (Math.sqrt x))
 (defun math:random (min max)
   (+ (* (Math.random) (- max min) ) min)
-)
+  )
+
+(defvar lisp::make-float32-array (js_eval "(n) => new Float32Array(n)"))
+
+(defun float32-array-sized(size)
+  (lisp::make-float32-array size)
+  )
+
 (defun float32-array (&rest items)
   (Float32Array.from items)
   )

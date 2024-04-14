@@ -24,18 +24,20 @@
 		 ))
 
 (defun float32-array-flatten (v)
-  (let ((result (list)))
-	 
-	 
-        (dotimes (i (length v))
-            (let ((item (nth v i)))
-                (dotimes (j (length item))
-                    (push result (nth item j))
-                )
-            )
-        )
-        
-        (float32-array-from result)
+  (let ((size 0)
+		  (k 0)
+		  (result nil))
+	 (dotimes (i (length v))
+		(incf size (length (nth v i)))
+		)
+	 (set result (float32-array-sized size))
+
+    (dotimes (i (length v))
+      (let ((item (nth v i)))
+        (dotimes (j (length item))
+          (setnth result k (nth item j))
+			 (incf k))))
+    result
 ))
 
 (defvar model::baked-models (makehashmap))
