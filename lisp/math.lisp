@@ -72,7 +72,23 @@
     (setnth m (+ row (* col 4)) val)
 )
 
-(defun mat4:multiply (a b)
+(defvar mat4::multiply-code "
+  (a, b) => {
+    result = new Float32Array(16)
+    for(let i = 0; i < 4; i++)
+    for(let j = 0; j < 4; j++){
+      let sum = 0.0;
+      for(let k = 0; k < 4; k++){
+         sum = sum + a[i + k * 4] * b[k + j * 4]
+      }
+      result[ i + j * 4] = sum;
+      
+    }
+    return result;
+  }  
+")
+
+(defun mat4:multiply2 (a b)
   (let ((result (mat4:new)))
     
     (dotimes (i 4)
@@ -137,6 +153,8 @@
 ")
 (defvar __mat4_apply2 (js_eval code222))
 (set mat4:apply __mat4_apply2)
+(defvar mat4::multiply (js_eval mat4::multiply-code))
+(defvar mat4:multiply mat4::multiply)
 
 
 
