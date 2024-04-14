@@ -7,33 +7,38 @@
     <script defer src="/bundle.js"></script></head>
     <body>
       <div id="app">
-        <h2>WebGL Demo4</h2>
-        <textarea id="editor"></textarea>
-        <button onclick="executeLisp()">Execute</button>
-        <div id="output"></div>
-      
         <script>
-          function executeLisp() {
-            const editorContent = document.getElementById('editor').value;
-            try {
-              // You can replace this with an actual Lisp interpreter or evaluator
-              //const result = evallisp(editorContent);
-              lisp.LispEvalBlock(editorContent);
-					 document.getElementById('output').innerText = "";
-            } catch (error) {
-              document.getElementById('output').innerText = `Error: ${error.message}`;
-            }
-            
-          }
-          //lisp.LispEvalBlock("(loadfile \"lisp/lisp.lisp\")")
-          document.addEventListener('DOMContentLoaded', function() 
+          document.addEventListener('DOMContentLoaded', async function() 
           {
-            lisp.LispEvalBlock("(loadfile \"lisp/lisp.lisp\")")
-            lisp.LispEvalBlock("(loadfile \"lisp/webgl.lisp\")")
+            await lisp.LispEvalBlock("(loadfile \"lisp/lisp.lisp\")")
+            await lisp.LispEvalBlock("(loadfile \"lisp/ld55.lisp\")")
+            
           });
         </script>
 
-        <canvas id="webgl-canvas" width="640" height="480"></canvas> 
+		  <canvas id="webgl-canvas" width="640" height="480"></canvas>
+		  <div id="controls">
+			 <h3> High-Bird 2: The Summoning </h3>
+			 You have been summoned. You can try following the wisps.
+			 <p>They look like this:    ▫  ▫▫   (the mountain is this way)
+
+			 <h4>Progress</h4>
+			 level: <span id="level" style="display: inline;"> </span> <p>
+			 
+			   Difficulty: <span id="distance"> </span> m
+            <h3>Controls</h3>
+            <ul>
+                <li><strong>a:</strong> move left</li>
+                <li><strong>d:</strong> move right</li>
+                <li><strong>w/arrow up:</strong> move forward</li>
+                <li><strong>s/arrow down:</strong> move backwards</li>
+                <li><strong>q/arrow left:</strong> turn left</li>
+                <li><strong>e/arrow right:</strong> turn right</li>
+					 <li><strong>Space:</strong> Reset level (for emergencies only)</li>
+            </ul>
+			 <p
+				<p><small style="font-family: monospace;">Game by github.com/rolfrm for Ludum Dare 55.  Music by Suno.ai.</small></p>
+        </div>
       </div>
     </body>
 </html>  

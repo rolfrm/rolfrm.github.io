@@ -296,4 +296,82 @@ asd ")
 
 (println (float32-array-flatten (list (vec3:new 1 2 3) (vec3:new 4 5 6))))
 
-(model:bake (model:red-cube))
+
+;(println (1-))
+
+(println (model::generate-sphere-2 4 4 0.5))
+(model:sphere12)
+
+(with-prefix model: (red-cube))
+  (dotimes (i 100)
+  (println (math:random -50 50))
+  )
+
+
+
+;(progn ($ println) 2 3 4)
+
+;; inlet syntax
+
+;(with-prefix model:
+;  (offset 0 0 0
+;			 ($ rotation 0 0 0)
+;			 ($ scale 2 2 2)
+;			 (red-cube)))
+
+(defun print-reader (code)
+  (println 'compile: code)
+  code
+)
+
+(println 1 2 3 ($ +) 4 ($ *) 5 6)
+(assert-eq 34 ($ +) 4 ($ *) 5 ($ * 2 3))
+
+
+(progn
+  ($ let ((a 2) (b 3)))
+  (println (+ a b)))
+
+(defvar code222 "
+
+(m, v)=>{
+    
+    const x = m[0] * v[0] + m[4] * v[1] + m[8] * v[2]+ m[12];
+    const y = m[1] * v[0] + m[5] * v[1] + m[9] * v[2]+ m[13];
+    const z = m[2] * v[0] + m[6] * v[1] + m[10] * v[2]+ m[14];
+    const w = m[3] * v[0] + m[7] * v[1] + m[11] * v[2] + m[15];
+   if (w != 0.0){
+     v[0] = x / w;
+     v[1] = y / w;
+     v[2] = z / w;
+   }else{
+     v[0] = x;
+     v[1] = y;
+     v[2] = z;
+  
+   }
+   return v;
+}
+
+")
+(defvar __mat4_apply2 (js_eval code222))
+(set mat4:apply __mat4_apply2)
+
+(let ((v2 (__mat4_apply2 (mat4:perspective 1.5 1.0 2 1000.0) (vec3:new 1 1 1))))
+  (println v2))
+
+(let ((v2 (mat4:apply (mat4:perspective 1.5 1.0 2 1000.0) ! vec3:new 1 1 1)))
+  (println v2))
+
+(assert-eq 3 (progn (progn ! + 1 2)))
+
+(assert-eq 12 (let ((sum 0)) (dotimes (u 3 6) (incf sum u)) sum))
+(assert-eq 6 (let ((sum 0)) (dotimes (u 4) (incf sum u)) sum))
+(assert-eq 20 (let ((sum 0)) (dotimes (u 0 10 2) (incf sum u)) sum))
+(assert-eq 4 (math:power 2 2))
+(println (slice (list 1 2 3) 1 2))
+
+(let ((sph (model::generate-sphere-2 8 8 1)))
+  (model:vertex-process sph  (lambda (x) (println x)))
+  (println sph)
+  )

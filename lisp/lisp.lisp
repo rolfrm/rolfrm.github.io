@@ -105,7 +105,7 @@
 
 (defun value->string (value) (__valueToString value))
 (defun string->symbol (string) (__makesym string))
-
+(defun symbol-name (symbol) symbol.value)
 
 
 (defun map (f lst)
@@ -345,12 +345,18 @@
 
 (defmacro dotimes (sym-count &rest body)
   (let ((sym (car sym-count))
-		  (count (cadr sym-count)))
-  `(let ((,sym 0))
+		  (l (length sym-count))
+		  (start (if (<= l 2) 0 (cadr sym-count))) 
+		  (count (if (<= l 2) (cadr sym-count) (caddr sym-count)))
+		  (step (if (eq l 4) (nth sym-count 3) 1))
+		  )
+	 
+  `(let ((,sym ,start))
 	  (loop (< ,sym ,count)
 		,@body
-		(incr ,sym))
+		(incr ,sym ,step))
 	  )))
+
 
 (defmacro cond (&rest cases)
   (let ((out-cases (list)))
@@ -404,18 +410,19 @@
 (defvar abs Math.abs)
 
 (defvar floor Math.floor)
+(defvar round Math.round)
+(defvar math:power Math.pow)
 
 (defun clamp (v minimum maximum)
     (min maximum (max v minimum)))
 
-(defmacro incr(sym incr_value)
+(defmacro incr (sym incr_value)
   `(set ,sym (+ ,sym ,(or incr_value 1)))
   )
 
-(defmacro push (location value)
-  `(let ((loc ,location))
-	  (loc.push ,value))
-  )
+(defun push (location value)
+  (location.push value))
+
 (defmacro for (varsym start stop increment &rest body)
   `(let ((,varsym ,start))
 	  (loop ,stop
@@ -423,6 +430,7 @@
 		,increment
 	  )
 	  ))
+
 (defun order-by (lst f)
     (let ((lst2 (lst.slice)))
 	   (lst2.sort (lambda (a b)
@@ -437,8 +445,7 @@
 
 (defun select (list f)
    (let ((out (list.slice))
-         (l list.length)
-         )
+         (l list.length))
      (for i 0 (< i l) (incf i) 
 	     (setnth out i (f (getnth list i))))
      out
@@ -464,7 +471,10 @@
 
 (defun take (lst n)
    (lst.slice 0 n)
-)
+	)
+
+;(defun slice (lst i n)
+ ; (lst.slice i n))
 
 (defun skip (lst n)
    (lst.slice n))
@@ -507,8 +517,110 @@
 (defun math:atan (x) (Math.atan x))
 (defun math:atan2 (y x) (Math.atan2 y x))
 (defun math:sqrt (x) (Math.sqrt x))
-
+(defun math:random (min max)
+  (+ (* (Math.random) (- max min) ) min)
+)
 (defun float32-array (&rest items)
   (Float32Array.from items)
-)
+  )
+
+(defun float32-array-from (list)
+  (Float32Array.from list))
+
+(defun float32-array-repeat (x times)
+  (when (number? x)
+
+	 ))
+(defun subarray(x i n)
+  (x.subarray i n)
+  )
+
+
+(defun prefix-symbols (prefix code)
+  (let ((any-new nil)
+        (result code))
+    
+    (dotimes (i (length code))
+      (let ((x (nth code i)))
+        (if (symbol? x)
+          (let ((existing-sym (lookupsym (concat (symbol-name prefix) (symbol-name x)))))
+            (when existing-sym
+              (set x existing-sym))
+          )
+          (when (list? x)
+            (set x (prefix-symbols prefix x))
+          
+          )
+        )
+        (unless (eq x (nth code i))
+          (when (eq code result)
+            (set result (apply list code))
+          )
+          (setnth result i x )
+
+        )
+      ))
+      result))
+    
+  
+
+(defmacro with-prefix (prefix &rest body)
+  `(progn ,@(prefix-symbols prefix body)))
+
+
+(defun $-impl (context index)
+  (let ((new-context (take context (+ 1 index)))
+		  (existing (nth context index)))
+	 (setnth new-context index (concat (cdr existing) (skip context (+ 1 index))))
+	 new-context))
+
+(defun !-impl (context index)
+  (let ((pre (take context index))
+		  (post (skip context (+ 1 index))))
+	 (println (concat pre (list post)))))
+
+
+(defvar super-macros (makehashmap))
+(hashmap-set super-macros '$ $-impl)
+(hashmap-set super-macros '! !-impl)
+(hashmap-set super-macros ', !-impl)
+
+(defun reader-replacer (code)
+  (if (list? code)
+		(progn
+		  (set code (apply list code))
+		(dotimes (i (length code))
+		  (let ((x (getnth code i)))
+			 (when (list? x)
+			 (if (symbol? (car x))
+				(let ((sw (hashmap-get super-macros (car x))))
+				  (if sw
+						(let ((result (sw code i)))
+						(set code result)
+						(set i 0)
+						)
+
+					 (progn
+						(setnth code i (reader-replacer x))
+						)
+				  )
+				  )
+				(progn
+				  (setnth code i (reader-replacer x))
+				  )
+				)
+			 )
+			 (when (symbol? x)
+				(let ((sw (hashmap-get super-macros x)))
+				  (when sw
+					 (set code (sw code i))
+
+					 (set i 0)
+					 )
+				))
+		  ))
+		code)
+  code))
+
+(set lisp_reader reader-replacer)
 
