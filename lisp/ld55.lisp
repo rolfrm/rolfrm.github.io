@@ -247,7 +247,8 @@
 					 (+ now (min step delta)))))))
 					 
 		
- 
+
+(defvar getTime (js_eval "()=> Date.now()"))
 
 (defvar animate t)
 (defvar time-component 15.0)
@@ -263,32 +264,36 @@
 
 (defun <> (min value max)
   (and (< min value) (> max value)))
-
+(defvar last-time (getTime))
 (defun animation-loop ()
-    (set time-component (+ time-component 0.01))
+
+  
     (let ((shader (shader:get-default)))
         (shader:use shader)
 		  )
-	 ($ let ((move-vec (vec3:new 0 0 0)) (move-angle player-angle) (xrot 0.0)))
-	 
+	 ($ let ((this-time (getTime)) (move-vec (vec3:new 0 0 0)) (move-angle player-angle) (xrot 0.0)
+		 (delta (/ (- this-time last-time) 16.0))))
+	 (set time-component  (+ time-component (* delta 0.01)))
+    
+	 (set last-time this-time)
     (when (key:down 'key:a)
 		
       (set move-vec (vec3:new -1 0 0))
 		(set move-angle 0.5)
 		)
 	 (when (or (key:down 'key:q) (key:down 'key:arrow-left))
-		(incf view-angle 0.01))
+		(incf view-angle (* 0.01 delta)))
 	 (when (or (key:down 'key:e) (key:down 'key:arrow-right))
-		(incf view-angle -0.01)
+		(incf view-angle (* delta -0.01))
 		)
     (when (key:down 'key:d)
 		(set move-angle 0)
 		(set move-vec (vec3:new 1 0 0)))
     (when (or (key:down 'key:arrow-up) (key:down 'key:w))
-		(set move-angle -0.25)
+		(set move-angle (* delta -0.25))
       (set move-vec (vec3:new 0 0 -1)))
     (when (or (key:down 'key:s) (key:down 'key:arrow-down))
-		(set move-angle 0.25)
+		(set move-angle (* delta 0.25))
       (set move-vec (vec3:new 0 0 1)))
 	 (when (key:on-down 'key:space)
 													 ;(play-sound walking-sound)
@@ -306,7 +311,7 @@
 			 (play-sound walking-sound)
 			 )
 		  (stop-sound walking-sound))
-	 (set move-vec (vec3:mul-scalar move-vec 0.3))
+	 (set move-vec (vec3:mul-scalar move-vec (* delta 0.3)))
 	 (when (> (vec3:length move-vec) 0)
 		(set move-vec (mat4:apply (mat4:rotation (* (- move-angle view-angle) math:2pi) (vec3:new 0 1 0)) (vec3:new 0.3 0 0.0)))
 		(set move-angle (- move-angle view-angle))
@@ -336,7 +341,7 @@
 			 (yd (- winloc-y (nth player-loc 2)))
 			 (d (math:sqrt (+ (* xd xd) (* yd yd)))))
 		(when (< d 3.0)
-		  (incf player-charge 0.02)
+		  (incf player-charge (* delta 0.02))
 		  (play-sound wowowow-sound)
 		  )
 		)
@@ -605,7 +610,8 @@
   
   ))
 
-(animation-loop)
+(requestAnimationFrame animation-loop)
+;(animation-loop)
 ;(modelling-loop)
 (defvar triangle (polygon:new
 						 (list -1 -1 0
