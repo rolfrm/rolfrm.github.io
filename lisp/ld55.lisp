@@ -272,7 +272,7 @@
         (shader:use shader)
 		  )
 	 ($ let ((this-time (getTime)) (move-vec (vec3:new 0 0 0)) (move-angle player-angle) (xrot 0.0)
-		 (delta (/ (- this-time last-time) 16.0))))
+		 (delta (max 1 (/ (- this-time last-time) 16.0)))))
 	 (set time-component  (+ time-component (* delta 0.01)))
     
 	 (set last-time this-time)
@@ -416,7 +416,7 @@
 					
 
 					(dotimes (offset -2 3)
-					($ dotimes (offsety -5 2))
+					($ dotimes (offsety -2 3))
 					(let (
           				(zone (+ offset (round (/ (nth player-loc 0) 40))))
 							(zone2 (+ offsety (round (/ (nth player-loc 2) 40))))
