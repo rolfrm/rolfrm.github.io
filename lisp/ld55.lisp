@@ -152,10 +152,10 @@
 
 (defvar winangle (math:random 0.0 math:2pi))
 
-(defvar win-dist 200)
+(defvar win-dist 400)
 (defvar winloc-x (* win-dist ! math:cos winangle))
 (defvar winloc-y (* win-dist ! math:sin winangle))
-(defvar map-seed (math:random 0 1000.0))
+(defvar map-seed (math:random -1000.0 1000.0))
 (defvar level-counter 1)
 (defun reload-game ()
   (set level-counter-obj.innerHTML level-counter)
@@ -163,8 +163,8 @@
   (set distance-obj.innerHTML win-dist)
   (set map-seed (math:random 0 1000.0))
 
-  (set winloc-x (* 400 ! math:cos winangle))
-  (set winloc-y (* 400 ! math:sin winangle))
+  (set winloc-x (* win-dist ! math:cos winangle))
+  (set winloc-y (* win-dist ! math:sin winangle))
   (set poly-cache (makehashmap))
   (set model::baked-models (makehashmap))
   (set cultists (list))
@@ -383,7 +383,7 @@
 	 
 
     ;; lets make some funky clear-color based on time:
-    (gl.clearColor 0.1 0.1 0.1 1.0)
+    (gl.clearColor 1.0 1.0 1.0 1.0)
     (gl.clear gl.COLOR_BUFFER_BIT)
     (with-prefix model: 
     (with-draw on-draw    
@@ -503,6 +503,13 @@
 					 
 					 
 					 )
+
+							 (offset (* zone 20 2) -4 (* zone2 20 2)
+								($ rgb 0.3 0.3 0.7)
+								($ scale 40 10 40)
+								(tile)
+								)
+					
 							 ;; draw arrow
 					(dotimes (i 2)
 					  ($ let ((x (+ (math:random -0.1 0.1)
@@ -540,12 +547,6 @@
 					  
 
 					  ))
-					(offset 0 -4 0
-								($ rgb 0.3 0.3 0.7)
-								($ scale 10000 10 10000)
-								(downcube)
-								)
-					
 
 					(offset 50 20 1
 								($ rgb 0.2 0.2 0.2)
@@ -590,7 +591,7 @@
 
   (key:clear-events)
   
-  (gl.clearColor 0.1 0.1 0.5 1.0)
+  (gl.clearColor 1.0 1.0 1.0 1.0)
   (gl.clear (+ gl.COLOR_BUFFER_BIT gl.DEPTH_BUFFER_BIT))
   (with-prefix model: 
     (with-draw on-draw
