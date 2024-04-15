@@ -152,7 +152,7 @@
 
 (defvar winangle (math:random 0.0 math:2pi))
 
-(defvar win-dist 400)
+(defvar win-dist 200)
 (defvar winloc-x (* win-dist ! math:cos winangle))
 (defvar winloc-y (* win-dist ! math:sin winangle))
 (defvar map-seed (math:random -1000.0 1000.0))
