@@ -187,10 +187,15 @@
 (defun hill(x y x0 y0 r h)
   (set x (- x x0))
   (set y (- y y0))
-  (let ((dc (math:sqrt (+ (* x x) (* y y))))
-		  (d (- r dc)))
-	 (+ h (min 0 d))
-  ))
+  
+  (let ((sqrd (+ (* x x) (* y y))))
+	 (if (< sqrd (* (+ r h) (+ r h) 2))
+		(let (
+				(dc (math:sqrt sqrd))
+				(d (- r dc)))
+		  (+ h (min 0 d)))
+		  -50)))
+	
 
 (defvar audio-load-code "(p) => new Audio(p)")
 (defvar audio-ctx-load-code "() => new (window.AudioContext || window.webkitAudioContext)();")
@@ -313,7 +318,7 @@
 		  (stop-sound walking-sound))
 	 (set move-vec (vec3:mul-scalar move-vec (* delta 0.3)))
 	 (when (> (vec3:length move-vec) 0)
-		(set move-vec (mat4:apply (mat4:rotation (* (- move-angle view-angle) math:2pi) (vec3:new 0 1 0)) (vec3:new 0.3 0 0.0)))
+		(set move-vec (mat4:apply (mat4:rotation (* (- move-angle view-angle) math:2pi) (vec3:new 0 1 0)) (vec3:new 0.25 0 0.0)))
 		(set move-angle (- move-angle view-angle))
 		)
     (set xrot move-angle)
@@ -415,8 +420,8 @@
 								 )
 					
 
-					(dotimes (offset -2 3)
-					($ dotimes (offsety -2 3))
+					(dotimes (offset -3 4)
+					($ dotimes (offsety -3 4))
 					(let (
           				(zone (+ offset (round (/ (nth player-loc 0) 40))))
 							(zone2 (+ offsety (round (/ (nth player-loc 2) 40))))
@@ -461,7 +466,8 @@
 									(scale s1 s2 s3
 											 (rgb 0.3 0.3 0.3
 													(rotate s4 0 1 0
-															  (sphere5))))
+															  (sphere5)
+															  )))
 								  )
 
 						)
