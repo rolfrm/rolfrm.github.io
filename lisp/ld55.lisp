@@ -305,7 +305,7 @@
 		
 		(reload-game)
 		)
-	 (when (> player-charge 10.0)
+	 (when (> player-charge 8.0)
 		(play-sound diiiu-sound)
 		(incf level-counter 1)
 		(incf win-dist 100)
