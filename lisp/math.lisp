@@ -2,7 +2,7 @@
     (float32-array x y z)
 )
 (defun vec3:from-array(arr offset)
-    (float32-array (nth arr offset) (nth arr (+ offset 1)) (nth arr (+ offset 2))))
+    (%js "new Float32Array([arr[offset], arr[offset + 1] , arr[offset + 2]])"))
 
 (defun vec3:x(v)
     (nth v 0))
