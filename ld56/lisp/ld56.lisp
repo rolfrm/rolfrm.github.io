@@ -128,7 +128,7 @@
 
 (defvar saved-friends (list "Saved friends: 0"))
 
-(defvar game-objects (list (list -20 -20 green-box -1 'player 4 0)
+(defvar game-objects (list (list -20 -20 green-box -1 'player  4 0 )
 									(list -19 -5 red-box -1 'apple)
 									(list -12 -15 red-box -1 'apple)
 									(list -13 -15 red-box -1 'apple)
@@ -273,6 +273,7 @@
 	 (add-blood x y)))
 ;(add-blood 0 0)
 (defvar level-to-load nil)
+													 ;(set level-to-load level5)
 (set level-to-load level5)
 
 (defun animation-loop ()
@@ -445,6 +446,11 @@
 				 (when other
 					
 					(set (th other 4) 'player)
+					
+					;; copy global location
+					(push other (th x 5))
+					(push other (th x 6))
+					
 					(set (th other 2) (th x 2))
 					) 
 			  ))
@@ -485,13 +491,13 @@
 				(offset-x 0))
 		 (when (or (progn (set offset-x 1) (> (th p 0) 30))
 					  (progn (set offset-x -1) (< (th p 0) -30)))
-			
+			($ when offset-x)
 			(foreach g (filter game-objects connected-to-player)
 						(set (th g 0) (+ (th g 0) (* offset-x -60))))
-			($ when offset-x)
+			(println 'load-at x y offset-x p)
 			(set x (+ x offset-x))
 			(set (th p 5) x)
-			(println 'load-at x y offset-x)
+			
 			(let ((new-level (hash2-get levels (list x y))))
 			  (unless new-level
 				 (set new-level level0))
