@@ -484,23 +484,22 @@
 				(y (th p 6))
 				(offset-x 0))
 		 (when (or (progn (set offset-x 1) (> (th p 0) 30))
-					  (progn (set offset-x -1) (< (th p 0) -30))
-					  ;(progn (set offset-x 0) (< (th p 0) -30))
-
-					  )
-		(foreach g (filter game-objects connected-to-player)
-					(set (th g 0) (+ (th g 0) (* offset-x -60))))
-		(set x (+ x offset-x))
-		(set (th p 5) x)
-		(println 'load-at x y offset-x)
-		(let ((new-level (hash2-get levels (list x y))))
-		  (unless new-level
-			 (set new-level level0))
-		  (println 'got: new-level new-level.level)
-		  (if (and new-level new-level.level)
-				(set level-to-load new-level.level)
-				(set level-to-load level0)
-				)))))
+					  (progn (set offset-x -1) (< (th p 0) -30)))
+			
+			(foreach g (filter game-objects connected-to-player)
+						(set (th g 0) (+ (th g 0) (* offset-x -60))))
+			($ when offset-x)
+			(set x (+ x offset-x))
+			(set (th p 5) x)
+			(println 'load-at x y offset-x)
+			(let ((new-level (hash2-get levels (list x y))))
+			  (unless new-level
+				 (set new-level level0))
+			  (println 'got: new-level new-level.level)
+			  (if (and new-level new-level.level)
+					(set level-to-load new-level.level)
+					(set level-to-load level0)
+					)))))
   
 
   
