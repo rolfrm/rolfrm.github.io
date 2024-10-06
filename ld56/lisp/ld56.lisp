@@ -90,7 +90,7 @@
 				(offset -0.15 -0.3 0
 						  (scale 0.5 0.2 1
 									(y-tile)))
-				(rgb 0 1 0
+				(rgb 1 0.5 0.5
 				(offset -0.0 0.8 0
 						  (scale 1.2 0.4 1
 									(y-tile))))
