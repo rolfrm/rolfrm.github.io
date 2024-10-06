@@ -1,0 +1,22 @@
+
+(defun sphere(p c r)
+  (- (vec3:length (vec3:sub p c)) r))
+
+(defun union (p sdf1 sdf2) (max (sdf p) (sdf2 p)))
+
+(defun sdf-points (points sizes sdf center radius res)
+  (let ((d (+ (sdf center) (* res 2))))
+	 (unless (> d (* radius math:sqrt3))
+		(unless (< d (* -1 radius math:sqrt3))
+		  (if (> radius res)
+				(dotimes (i 8)
+				  (let ((x (if (op_and i 1) 0.5 -0.5))
+						  (y (if (op_and i 2) 0.5 -0.5))
+						  (z (if (op_and i 4) 0.5 -0.5)))
+					 (sdf-points points sizes sdf (vec3:add center (vec3:mul-scalar (vec3:new x y z) radius)) (* radius 0.5) res)
+			 
+					 ))
+				(progn
+				  (push sizes radius)
+				  (push points center))
+  )))))

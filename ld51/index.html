@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
+    <title>Spinning Cube</title>
+    <style>
+      html,
+      body {
+          margin: 0;
+          height: 100%;
+          width: 100%;
+          overflow: hidden;
+          overflow-x: hidden;
+          overflow-y: hidden;
+          position: fixed;         
+      }
+
+      .emscripten_border {
+          pointer-events: none;
+      }
+      #editor {
+          flex-grow: 1;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div class="spinner" id='spinner'></div>
+    <div class="emscripten" id="status"></div>
+
+</span>
+<div class="collapsible">
+  <button onclick="invokeLispCode()">Run (CTRL+B)</button>
+                                                             
+</div>
+<div class="emscripten">
+  <progress value="0" max="100" id="progress" height="0" hidden=1></progress>
+</div>
+
+</div>
+<div id="emscripten_border" style="height: 100%;width: 100%;">
+
+</div>
+<div id="editor-and-view" class="container" style="position: fixed; top:0px;">
+
+  <div class="emscripten_border" >
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+  </div>
+
+</div>
+
+
+
+<script type='text/javascript'>
+ 
+  var statusElement = document.querySelector('#status');
+  var progressElement = document.querySelector('#progress');
+  var spinnerElement = document.querySelector('#spinner');
+
+  var canv = document.getElementById('canvas');
+  var Module = {
+      canvas : canv,
+      preRun: [],
+      postRun: [
+          //function () {loadLispCode('demo.lisp');}
+      ],
+      print: (function () {
+          var element = document.querySelector('#output');
+          if (element) element.value = ''; // clear browser cache
+          return function (text) {
+              console.log(text)
+              if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+          };
+      })(),
+      printErr: function (text) {
+          if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+          
+          console.error(text);
+      },
+      
+      setStatus: function (text) {
+          if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+          if (text === Module.setStatus.last.text) return;
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          var now = Date.now();
+          if (m && now - Module.setStatus.last.time < 30) return; // if this is a progress update, skip it if too soon
+          Module.setStatus.last.time = now;
+          Module.setStatus.last.text = text;
+          if (m) {
+              text = m[1];
+              progressElement.value = parseInt(m[2]) * 100;
+              progressElement.max = parseInt(m[4]) * 100;
+              progressElement.hidden = false;
+              spinnerElement.hidden = false;
+          } else {
+              progressElement.value = null;
+              progressElement.max = null;
+              progressElement.hidden = true;
+              if (!text) spinnerElement.style.display = 'none';
+          }
+          statusElement.innerHTML = text;
+      },
+      totalDependencies: 0,
+      monitorRunDependencies: function (left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+      }
+  };
+  Module.setStatus('Downloading...');
+  window.onerror = function (event) {
+      // TODO: do not warn on ok events like simulating an infinite loop or exitStatus
+      Module.setStatus('Exception thrown, see JavaScript console');
+      //alert(event)
+      spinnerElement.style.display = 'none';
+      Module.setStatus = function (text) {
+          if (text) Module.printErr('[post-exception status] ' + text);
+      };
+  };
+
+  var editor = []
+  function loadLispCode(file){
+      console.log("load file", file)
+      r = Module.ccall("lisp_read_file", [], ['string'], [file]);
+      
+      i = 0;
+      for(; i < 100000; i++){
+          if(Module.HEAPU8[r + i] == 0)
+              break;
+      }
+      var heapBytes = new Uint8Array(Module.HEAPU8.buffer, r, i);
+        
+      var decoder = new TextDecoder('utf-8')
+      decodedMessage = decoder.decode(heapBytes);
+
+      editor = ace.edit("editor", {
+          mode: "ace/mode/javascript",
+          selectionStyle: "text"
+      })
+      editor.commands.addCommand({
+          name: 'build',
+          bindKey: {win: 'Ctrl-B',  mac: 'Command-B'},
+          exec: function(editor) {
+              invokeLispCode()
+          },
+          readOnly: true, 
+      });
+
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          // dark mode
+          //editor.setTheme("ace/theme/twilight");
+      }else{
+          //editor.setTheme("ace/theme/twilight");
+      }
+      lsp = ace.createEditSession(decodedMessage);
+      lsp.setMode("ace/mode/lisp");
+      editor.setSession(lsp);
+  }
+  function invokeLispCode(){
+      var code = editor.getValue()
+      Module.ccall("lisp_invoke_string", [], ['string'], [code]);
+  }
+
+</script>
+<script async type="text/javascript" src="index.js"></script>
+</body>
+
+</html>
