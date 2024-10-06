@@ -295,7 +295,7 @@
   (key:clear-events)
   ($ let ((y-move 0)
 			 (x-move 0)
-			 (speed 0.3)
+			 (speed (* delta-time 60.0 0.3))
 			 ))
 		  
   (when (key:down 'key:arrow-right)
@@ -511,7 +511,7 @@
   ;(println offset-x offset-y)
   ($ let ((time2 (/ time 100))
 			 (deltat (- time last-time))
-			 (fps2 (/ 1.0 deltat))
+			 (fps2 (/ 1.0 (or deltat 1.0)))
 			 ))
   (set fps (+ (* 0.9 fps) (* 0.1 fps2)))
   (set fps-display.innerHTML (concat (fps.toFixed 0) ))
